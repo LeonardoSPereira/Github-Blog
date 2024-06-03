@@ -4,6 +4,7 @@ export const HomeContainer = styled.main`
   width: 100%;
   max-width: 54rem;
   margin: 0 auto;
+  padding-bottom: 3rem;
 `
 
 export const SearchInput = styled.div`
