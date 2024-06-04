@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 
 export const CardContainer = styled(Link)`
-  /* max-height: 16.25rem; */
+  max-width: 26rem;
   text-decoration: none;
   display: flex;
   flex-direction: column;
@@ -13,8 +13,8 @@ export const CardContainer = styled(Link)`
   padding: 2rem;
 
   p {
-    max-height: 6rem;
-    overflow: hidden;
+    white-space: nowrap;
+    overflow-y: hidden;
     text-overflow: ellipsis;
     line-height: 160%;
   }
@@ -36,5 +36,6 @@ export const CardHeader = styled.header`
     font-size: 0.875rem;
     line-height: 160%;
     color: ${(props) => props.theme['base-span']};
+    margin-top: 0.25rem;
   }
 `

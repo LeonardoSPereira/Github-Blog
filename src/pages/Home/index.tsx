@@ -9,7 +9,7 @@ export function Home() {
       <Header />
 
       <HomeContainer>
-        <Profile />
+        <Profile variant="default" />
         <SearchInput>
           <label htmlFor="search">
             <span>Publicações</span>

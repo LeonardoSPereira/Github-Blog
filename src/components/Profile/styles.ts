@@ -18,6 +18,14 @@ export const ProfileContainer = styled.section`
     height: 9.25rem;
     border-radius: 6px;
   }
+
+  h2 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    line-height: 130%;
+    color: ${(props) => props.theme['base-title']};
+    margin-bottom: 0.5rem;
+  }
 `
 
 export const ProfileContent = styled.div`
@@ -37,13 +45,6 @@ export const ProfileHeader = styled.header`
   align-items: center;
   justify-content: space-between;
   margin-bottom: 0.5rem;
-
-  h2 {
-    font-size: 1.5rem;
-    font-weight: bold;
-    line-height: 130%;
-    color: ${(props) => props.theme['base-title']};
-  }
 
   a {
     display: flex;
