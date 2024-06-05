@@ -7,7 +7,7 @@ export const HomeContainer = styled.main`
   padding-bottom: 3rem;
 `
 
-export const SearchInput = styled.div`
+export const SearchForm = styled.form`
   margin-top: 4.5rem;
   display: flex;
   flex-direction: column;

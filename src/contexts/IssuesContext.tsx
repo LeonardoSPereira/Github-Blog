@@ -11,7 +11,7 @@ interface IssuesProviderProps {
   children: ReactNode
 }
 
-interface IssueProps {
+export interface IssueProps {
   html_url: string
   number: number
   title: string
@@ -26,7 +26,8 @@ interface IssueProps {
 interface IssueContextType {
   issues: IssueProps[]
   issuesCount: number
-  filterIssue: (issueNumber: number) => IssueProps | undefined
+  filterIssue: (issueNumber: number) => IssueProps | null
+  searchIssues: (query: string) => IssueProps[] | null
 }
 
 export const IssuesContext = createContext({} as IssueContextType)
@@ -36,8 +37,11 @@ export function IssuesProvider({ children }: IssuesProviderProps) {
   const [issuesCount, setIssuesCount] = useState(0)
 
   const fetchIssues = useCallback(async () => {
+    const repositoryOwner = 'leonardospereira'
+    const repositoryName = 'github-blog'
+
     const response = await api.get(
-      '/search/issues?q=repo:leonardospereira/github-blog',
+      `/search/issues?q=repo:${repositoryOwner}/${repositoryName}`,
     )
     setIssues(response.data.items)
     setIssuesCount(response.data.total_count)
@@ -45,7 +49,28 @@ export function IssuesProvider({ children }: IssuesProviderProps) {
 
   const filterIssue = useCallback(
     (issueNumber: number) => {
-      return issues.find((issue) => issue.number === issueNumber)
+      const filteredIssue = issues.find((issue) => issue.number === issueNumber)
+
+      if (!filteredIssue) {
+        return null
+      }
+
+      return filteredIssue
+    },
+    [issues],
+  )
+
+  const searchIssues = useCallback(
+    (query: string) => {
+      const filteredIssues = issues.filter((issue) =>
+        issue.title.toLowerCase().includes(query.toLowerCase()),
+      )
+
+      if (filteredIssues.length === 0) {
+        return null
+      }
+
+      return filteredIssues
     },
     [issues],
   )
@@ -55,7 +80,9 @@ export function IssuesProvider({ children }: IssuesProviderProps) {
   }, [fetchIssues])
 
   return (
-    <IssuesContext.Provider value={{ issues, issuesCount, filterIssue }}>
+    <IssuesContext.Provider
+      value={{ issues, issuesCount, filterIssue, searchIssues }}
+    >
       {children}
     </IssuesContext.Provider>
   )

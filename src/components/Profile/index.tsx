@@ -49,7 +49,9 @@ export function Profile({
   const [githubProfile, setGithubProfile] = useState<GithubProfileProps>()
 
   async function fetchGithubProfile() {
-    const response = await api.get('/users/leonardospereira')
+    const username = 'leonardospereira'
+
+    const response = await api.get(`/users/${username}`)
 
     setGithubProfile(response.data)
   }

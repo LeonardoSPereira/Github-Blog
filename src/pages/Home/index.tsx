@@ -1,12 +1,38 @@
-import { Header } from '../../components/Header'
-import { CardContainer, HomeContainer, SearchInput } from './styles'
+import { useContext, useState } from 'react'
+import { CardContainer, HomeContainer, SearchForm } from './styles'
+import { IssueProps, IssuesContext } from '../../contexts/IssuesContext'
 import { Profile } from '../../components/Profile'
+import { Header } from '../../components/Header'
 import { Card } from '../../components/Card'
-import { useContext } from 'react'
-import { IssuesContext } from '../../contexts/IssuesContext'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
+
+const searchIssuesFormSchema = z.object({
+  query: z.string(),
+})
+
+type searchIssuesInputsType = z.infer<typeof searchIssuesFormSchema>
 
 export function Home() {
-  const { issues, issuesCount } = useContext(IssuesContext)
+  const [filteredIssues, setFilteredIssues] = useState<IssueProps[] | null>(
+    null,
+  )
+  const { issues, issuesCount, searchIssues } = useContext(IssuesContext)
+
+  const { register, handleSubmit } = useForm<searchIssuesInputsType>({
+    resolver: zodResolver(searchIssuesFormSchema),
+  })
+
+  function handleSearchIssues({ query }: searchIssuesInputsType) {
+    const filteredIssues = searchIssues(query)
+
+    console.log(filteredIssues)
+
+    if (filteredIssues !== null) {
+      setFilteredIssues(filteredIssues)
+    }
+  }
 
   return (
     <div>
@@ -14,7 +40,8 @@ export function Home() {
 
       <HomeContainer>
         <Profile variant="default" />
-        <SearchInput>
+
+        <SearchForm onSubmit={handleSubmit(handleSearchIssues)}>
           <label htmlFor="search">
             <span>Publicações</span>
             <span>
@@ -26,20 +53,34 @@ export function Home() {
             </span>
           </label>
 
-          <input type="text" id="search" placeholder="Buscar conteúdo" />
-        </SearchInput>
+          <input
+            type="text"
+            id="search"
+            placeholder="Buscar conteúdo"
+            {...register('query')}
+          />
+        </SearchForm>
 
         <CardContainer>
-          {issues &&
-            issues.map((issue) => (
-              <Card
-                key={issue.number}
-                number={issue.number}
-                title={issue.title}
-                description={issue.body}
-                date={issue.created_at}
-              />
-            ))}
+          {filteredIssues !== null
+            ? filteredIssues.map((issue) => (
+                <Card
+                  key={issue.number}
+                  number={issue.number}
+                  title={issue.title}
+                  description={issue.body}
+                  date={issue.created_at}
+                />
+              ))
+            : issues.map((issue) => (
+                <Card
+                  key={issue.number}
+                  number={issue.number}
+                  title={issue.title}
+                  description={issue.body}
+                  date={issue.created_at}
+                />
+              ))}
         </CardContainer>
       </HomeContainer>
     </div>
